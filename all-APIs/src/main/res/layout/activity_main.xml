@@ -51,7 +51,30 @@
                 android:id="@+id/button1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="INIT" />
+                android:text="INIT (1)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/startScan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="START WIRELESS SCAN (2)" />
+
+            <Button
+                android:id="@+id/btngetDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="GET_DISPLAYS (3)" />
+        </LinearLayout>
+
 
             <EditText
                 android:id="@+id/deviceAddressEditText"
@@ -77,22 +100,14 @@
                                 android:text="ENABLE"
                                 android:textSize="12sp"/>
                                 -->
-                <Button
-                    android:id="@+id/startScan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    android:textSize="10sp"
-                    android:text="START SCAN" />
+
 
                 <Button
                     android:id="@+id/button2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="12sp"
-                    android:text="CONNECT" />
+                    android:text="CONNECT (4)" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,14 +122,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
-                    android:text="STOP SCAN" />
+                    android:text="STOP WIRELESS SCAN (5)" />
 
                 <Button
                     android:id="@+id/button3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="DISCONNECT" />
+                    android:text="DISCONNECT (7)" />
             </LinearLayout>
 
             <LinearLayout
@@ -184,19 +199,11 @@
                 android:weightSum="2">
 
                 <Button
-                    android:id="@+id/btngetDisplay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    android:text="GET_DISPLAYS" />
-
-                <Button
                     android:id="@+id/btngetStatus"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="GET_STATUS" />
+                    android:text="GET_STATUS (6)" />
             </LinearLayout>
 
 
@@ -257,14 +264,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="2dp"
-                        android:text="CALLBACK_ON" />
+                        android:text="DISPLAY CHANGE, CALLBACK_ON" />
 
                     <Button
                         android:id="@+id/btnCallbackOff"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="CALLBACK_OFF" />
+                        android:text="DISPLAY CHANGE, CALLBACK_OFF" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -273,7 +280,7 @@
                 android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="DEINIT" />
+                android:text="DEINIT (8)" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -284,7 +291,7 @@
                     android:id="@+id/resultTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Result will appear here"
+                    android:hint="Results will appear here"
                     android:padding="4dp"
                     android:textSize="16sp" />
             </ScrollView>
