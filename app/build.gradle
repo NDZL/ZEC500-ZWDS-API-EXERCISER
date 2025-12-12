@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace 'com.zebra.zwds.pocsampledev'
+    namespace 'com.zebra.pocsampledev'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.zebra.zwds.pocsampledev"
+        applicationId "com.zebra.pocsampledev"
         minSdk 30
         targetSdk 35
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.12.-NDZL"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
