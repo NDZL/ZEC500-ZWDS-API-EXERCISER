@@ -51,7 +51,8 @@ Here is how this sample app appears when run on a Zebra ET401 tablet (OS is Andr
 
 Buttons numbering on the app matches those described above.
 
-<img width="932" height="580" alt="image" src="https://github.com/user-attachments/assets/7b772360-8181-41b7-99fb-8daf27219d0f" />
+<img width="932" height="524" alt="image" src="https://github.com/user-attachments/assets/29e4219a-b2f7-4687-b316-cf7aa0fc42a8" />
+
 
 
 ---
