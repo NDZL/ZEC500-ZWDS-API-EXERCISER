@@ -167,8 +167,15 @@ Visually, this picture shows how it works
 
 The logic here requires that on the Table side a match between the scanned screen name and the available displays is found and resolved into a WIFI MAC ADDRESS. Such a matching [happens here](https://github.com/NDZL/ZEC500-ZWDS-API-EXERCISER/blob/5abbca69e4fa4496e647bdf7ea0bc5ce18603407/workflow/src/main/java/com/zebra/zwds/developersample/Utils.java#L47), and is followed by a connection attempt with `DeveloperService.connectDevice(...)`.
 
-Previously, the ZWDS was initiate in the Home Activity/initializeView() method, and the display scan was performed upon entering the SCAN TO CONNECT activity in 
+Previously, the ZWDS was initiated in the Home Activity/initializeView() method, and the display scan was performed upon entering the SCAN TO CONNECT activity in 
 ScanConnectActivity.java/onCreate/DeveloperService.startDisplayScan()
+
+### TAP TO CONNECT
+This use case is based on NFC tapping. On tablets the NFC antenna in located in the middle of the screen glass. So _tapping_ results in a rather weird action like this...
+
+<img width="491" height="384" alt="image" src="https://github.com/user-attachments/assets/327903f6-6d0f-41ff-a1d3-ee0206cfa730" />
+
+
 
 ---
 
