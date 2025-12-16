@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:layout_marginTop="@dimen/_minus58sdp"
+                android:id="@+id/par_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center|center_horizontal">
+                <ImageView
+                    android:id="@+id/logoIconViewMobile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="App Icon"
+                    android:src="@drawable/phone_icon_tap"
+                    android:paddingHorizontal="@dimen/_60ssp"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/_95sdp">
+
+                <TextView
+                    android:id="@+id/welcomeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_55sdp"
+                    android:paddingHorizontal="@dimen/_20ssp"
+                    android:textColor="@color/black"
+                    android:text="@string/tap_your_handheld_or_tablet_to_initiate_a_connection"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/_20ssp" />
+                <TextView
+                    android:id="@+id/instructionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tap_your_handheld_or_tablet_on_the_device_pairing_icon_to_connect"
+                    android:textSize="@dimen/_14ssp"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"
+                    android:paddingTop="@dimen/_10ssp"
+                    android:paddingHorizontal="@dimen/_20ssp"/>
+            </LinearLayout>
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>

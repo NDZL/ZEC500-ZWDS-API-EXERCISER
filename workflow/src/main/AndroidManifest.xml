@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <queries>
+        <package android:name="com.zebra.devicemanager" />
+    </queries>
+
+    <!-- Permissions required by the application -->
+    <uses-permission android:name="com.zebra.devicemanager.provider.READ_PERMISSION" />
+    <uses-permission android:name="com.zebra.devicemanager.provider.WRITE_PERMISSION" />
+    <!-- Request permission to receive broadcasts -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="com.zebra.permission.ZWDS_BROADCAST" />
+    <!-- Features required by the application -->
+    <uses-feature
+        android:name="android.hardware.wifi.direct"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true"
+        tools:ignore="UnnecessaryRequiredFeature" />
+
+
+
+    <application
+        android:name=".MyApp"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DeveloperSample"
+        tools:targetApi="31">
+
+        <receiver
+            android:name=".DevResponseReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.zebra.wirelessdeveloperservice.action.DEV_SERVICE_RESPONSE" />
+                <action android:name="com.zebra.wirelessdeveloperservice.action.BT_PROXIMITY_STATE_CHANGE" />
+                <action android:name="com.zebra.wirelessdeveloperservice.action.CONNECTION_STATE_CHANGE" />
+                <action android:name="com.zebra.wirelessdeveloperservice.action.DISPLAY_DETAILS_CHANGE" />
+                <!-- Add other actions or categories if needed -->
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".SecureIntentActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".HomeActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".TapConnectActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+        <!-- Activity for scan-to-pair functionality, not exported -->
+        <activity
+            android:name=".ScanConnectActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name=".ProximityActivity"
+            android:exported="false"
+            android:label="Proximity Settings"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <activity
+            android:name=".DesktopModeActivity"
+            android:exported="false"
+            android:label="Desktop Mode Settings"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+    </application>
+
+</manifest>

@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ZEC500-ZWDS-API-Exerciser"
 include ':all-APIs'
+include ':workflow'

@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="switch_thumb_size">@dimen/_20sdp</dimen>
+    <dimen name="switch_thumb_margin">@dimen/_2sdp</dimen>
+    <dimen name="switch_track_height">@dimen/_25sdp</dimen>
+    <dimen name="switch_track_radius">@dimen/_12sdp</dimen>
+    <dimen name="seek_thumb_size">@dimen/_15sdp</dimen>
+    <dimen name="seek_thumb_margin">@dimen/_2sdp</dimen>
+    <dimen name="seekbar_progress_radius">@dimen/_4sdp</dimen>
+    <dimen name="seekbar_progress_height">@dimen/_6sdp</dimen>
+</resources>
