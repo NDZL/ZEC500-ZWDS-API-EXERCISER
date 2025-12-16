@@ -167,6 +167,8 @@ Visually, this picture shows how it works
 
 The logic here requires that on the Table side a match between the scanned screen name and the available displays is found and resolved into a WIFI MAC ADDRESS. Such a matching [happens here](https://github.com/NDZL/ZEC500-ZWDS-API-EXERCISER/blob/5abbca69e4fa4496e647bdf7ea0bc5ce18603407/workflow/src/main/java/com/zebra/zwds/developersample/Utils.java#L47), and is followed by a connection attempt with `DeveloperService.connectDevice(...)`.
 
+Previously, the ZWDS was initiate in the Home Activity/initializeView() method, and the display scan was performed upon entering the SCAN TO CONNECT activity in 
+ScanConnectActivity.java/onCreate/DeveloperService.startDisplayScan()
 
 ---
 
