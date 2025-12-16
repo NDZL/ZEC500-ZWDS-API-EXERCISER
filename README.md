@@ -151,7 +151,7 @@ Also, let's compare that API documentation with the actual code implementation
 Act similarly for the other APIs.
 
  
-## The Workflows
+## The Workflows (code module 'workflow')
 As shared in this blog post introduction, an additional sample project is amde available to developers. It shows how to automate all the needed API calls acoording to two workflows: TAP TO CONNECT (where NFC tapping is involved) and SCAN TO CONNECT (where a barcode scanning is required).
 
 I'll briefly describe such workflows in the following lines.
