@@ -151,6 +151,21 @@ Also, let's compare that API documentation with the actual code implementation
 Act similarly for the other APIs.
 
  
+## The Workflows
+As shared in this blog post introduction, an additional sample project is amde available to developers. It shows how to automate all the needed API calls acoording to two workflows: TAP TO CONNECT (where NFC tapping is involved) and SCAN TO CONNECT (where a barcode scanning is required).
+
+I'll briefly describe such workflows in the following lines.
+
+### SCAN TO CONNECT
+It's the most common use case.
+Visually, this picture shows how it works
+
+<img width="789" height="667" alt="image" src="https://github.com/user-attachments/assets/8779124e-0bc3-4834-9421-9f7c2498ea33" />
+
+- The screen is connected to ZEC500 and runs an app that displays the QR Code (screen's bottom-right)
+- A tablet (Zebra ET401) in the foreground is connecting by scanning that QR Code
+
+The logic here requires that on the Table side a match between the scanned screen name and the available displays is found and resolved into a WIFI MAC ADDRESS. Such address will then be used by APIs to actually perform the connection.
 
 
 
