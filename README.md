@@ -175,8 +175,8 @@ This use case is based on NFC tapping. On tablets the NFC antenna in located in 
 
 <img width="491" height="384" alt="image" src="https://github.com/user-attachments/assets/327903f6-6d0f-41ff-a1d3-ee0206cfa730" />
 
-
+The TapConnectActivity.java file controls the NFC action and the onTagDiscovered callback assigns the targetDockName = new String(payload, StandardCharsets.UTF_8); the program flow is then merged into the calls previoulsy described for other use cases.
 
 ---
 
-Happy building!
+
