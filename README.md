@@ -33,7 +33,7 @@ Once the binding has been granted, any ZWDS API call must include a _token_, gen
 ---
 
 ## High-Level Lifecycle ('all-API' module) 
-Here is the API set to use to interact with the ZWDS service. The numbering suggests the calling sequence. Follow the links to access the related source that you can copy/paste directly into your project.
+Here is the API set to use to interact with the ZWDS service. The numbering suggests the calling sequence. Follow the links to access the related source that you can copy/paste directly into your project. Refer to the next paragraph 'Expanded State Machine View' for a complete state diagram.
 
 | Step | API | Purpose | Key Outputs | Common Failure Modes |
 |------|-----|---------|-------------|----------------------|
