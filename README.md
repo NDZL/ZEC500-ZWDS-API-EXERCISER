@@ -2,7 +2,9 @@
 
 Wireless display experiences live or die by their connection lifecycle. The ZWDS (Zebra Wireless Developer Service) API for ZEC500-class devices centers on a small but critical set of calls that must be orchestrated correctly to deliver a smooth “extended” secondary screen experience. This post walks through the canonical sequence, expands on each stage, and offers patterns, diagrams, and practices you can adopt immediately.
 
-I'll provide developers with a sample project that exercises ZWDS APIs separately, so that you must invoke the single APIs by pressing buttons in the guided sequence. This project is found in the "all-API" module.
+I'm providing developers with two sample projects that exercises ZWDS APIs
+- The first works with APIs separately, so that you must invoke the single APIs by pressing buttons in the guided sequence. This project is found in the "all-API" module.
+- The second is found in the "workflow" module and showcases the SCAN TO CONNECT usecase (a QRcode with the target display name must be scanned) and the TAP TO CONNECT usecase, where the target screen name is sourced by the target device's NFC.
 
 ---
 
