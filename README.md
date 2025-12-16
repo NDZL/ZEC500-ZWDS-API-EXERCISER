@@ -47,6 +47,13 @@ Here is the API set to use to interact with the ZWDS service. The numbering sugg
 | 7 | [`DISCONNECT_WIRELESS_DISPLAY`](https://github.com/NDZL/ZEC500-ZWDS-API-EXERCISER/blob/f499f5019d94e03ec90ff9384e252d945d19132d/all-APIs/src/main/java/com/zebra/pocsampledev/MainActivity.java#L211) | Tears down connection gracefully | Resource release | Forced disconnect, leakage on error path |
 | 8 | [`DEINIT_DEV_SERVICE`](https://github.com/NDZL/ZEC500-ZWDS-API-EXERCISER/blob/f499f5019d94e03ec90ff9384e252d945d19132d/all-APIs/src/main/java/com/zebra/pocsampledev/MainActivity.java#L235) | Service is uninitialized | --- | --- |
 
+Here is how this sample app appears when run on a Zebra ET401 tablet (OS is Android 15).
+
+Buttons numbering on the app matches those described above.
+
+<img width="932" height="580" alt="image" src="https://github.com/user-attachments/assets/7b772360-8181-41b7-99fb-8daf27219d0f" />
+
+
 ---
 
 
