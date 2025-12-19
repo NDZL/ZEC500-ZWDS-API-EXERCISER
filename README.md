@@ -1,4 +1,4 @@
-# Mastering the ZWDS Wireless Display API v20251218h7
+# Mastering the ZWDS Wireless Display API
 
 Wireless display experiences live or die by their connection lifecycle. The ZWDS (Zebra Wireless Developer Service) API for ZEC500-class devices centers on a small but critical set of calls that must be orchestrated correctly to deliver a smooth “extended” secondary screen experience. This post walks through the canonical sequence, expands on each stage, and offers patterns, diagrams, and practices you can adopt immediately.
 
