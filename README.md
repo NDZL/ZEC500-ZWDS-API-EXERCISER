@@ -35,7 +35,7 @@ However, not any application can generate a token! An administrator needs to gra
 - Service Identifier: "delegation-zebra-zwds-api-intent-secure"
 - Caller Package Name: this is the applicationID of the application that will be granted access to the token generation; the applicationId is usually found in the build.gradle file of an Android Studio project.
   
-  e.g. <img width="298" height="38" alt="image" src="https://github.com/user-attachments/assets/ed7d4e69-4acb-4d35-984b-5f847bf958b9" />
+  e.g. <img width="298" height="38" alt="Image" src="https://github.com/user-attachments/assets/fc792abd-12d0-4795-8e4a-5f86cf40b359" />
 - Caller Signature: this is the first signature of the application's APK, in DER format, provided as a CRT file. Refer to [https://techdocs.zebra.com/sigtools/](https://techdocs.zebra.com/sigtools/) to learn how to extract a signature. I also made this online application available for APK signature retrieval; it works for most APKs: [https://cxnt48.com/apksig](https://cxnt48.com/apksig)
 
 The following picture summarizes the Access Manager configuration required:
