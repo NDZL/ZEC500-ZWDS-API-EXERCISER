@@ -40,7 +40,7 @@ However, not any application can generate a token! An administrator needs to gra
 
 The following picture summarizes the Access Manager configuration required:
 
-<img width="367" height="571" alt="image" src="https://github.com/user-attachments/assets/78db6035-5d21-4748-b132-8dd48b1f6975" />
+<img width="367" height="571" alt="Image" src="https://github.com/user-attachments/assets/ceb4d4f8-66c1-40f1-a5ba-06a2bf2c3391" />
 
 
 ### UNSECURE MODE
