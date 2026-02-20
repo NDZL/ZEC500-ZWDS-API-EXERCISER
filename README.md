@@ -79,7 +79,7 @@ Here is how this sample app appears when run on a Zebra ET401 tablet (OS is Andr
 
 The buttons numbered on the app match those described above.
 
-<img width="966" height="481" alt="image" src="https://github.com/user-attachments/assets/aabad31a-d936-4ef1-b3c7-37f02dfc659d" />
+<img width="966" height="481" alt="Image" src="https://github.com/user-attachments/assets/04186f5a-a83c-4982-b159-3d61b6801930" />
 
 
 
