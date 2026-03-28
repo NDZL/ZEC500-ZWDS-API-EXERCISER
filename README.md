@@ -228,3 +228,4 @@ Once a connection is established with the ZEC500 device, if it is again called, 
 
 Enjoy this new ZEC500 experience!
 
+![](https://cxnt48.com/author?ghZWDSAPI) 
