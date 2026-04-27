@@ -226,6 +226,185 @@ Once a connection is established with the ZEC500 device, if it is again called, 
 
 ---
 
+---
+
+# Going Hands-Free with ZWDS: Bluetooth Proximity Auto-Connect
+
+Casting a tablet onto a wireless display is great — but the moment a user has to remember to press “Connect” every time they walk up to a Maverick (ZEC500) box, the experience starts to drag. ZWDS solves this with a second, complementary API surface: **Bluetooth Proximity**. Once enabled, the host device decides — entirely on its own — when it is _close enough_ to a paired display to be considered “in proximity”, and when it has moved _far enough_ away to be considered “out of proximity”. The same Zebra Wireless Developer Service that drives display scan and connect also exposes the proximity machinery, so everything runs through the same Intent / PendingIntent pattern you'll see later in this post under **API Template**.
+
+This section walks through the three proximity APIs, the dedicated state-change broadcast they emit, and how they slot into the broader ZWDS lifecycle. I'm using the same _'all-API'_ sample style as below — one button per API call, distinct `request_id`s, one shared `DevResponseReceiver` — so the integration patterns transfer cleanly.
+
+---
+
+## Why Proximity?
+
+The classic wireless-display flow (`INIT_DEV_SERVICE` → scan → `CONNECT_WIRELESS_DISPLAY`) puts the connection moment in the user's hands. Proximity inverts that: ZWDS continuously measures the BT-class signal between the host and a paired/remembered Maverick, and tells your app the moment the user crosses a configurable distance — both on the way **in** (connect threshold) and on the way **out** (disconnect threshold).
+
+Two thresholds, two independent on/off switches:
+
+- `CONNECT_THRESHOLD` — when the host gets within this many feet of the display, ZWDS fires the proximity-connect broadcast.
+- `DISCONNECT_THRESHOLD` — when the host moves beyond this many feet, ZWDS fires the proximity-disconnect broadcast.
+
+Both are bounded: **max value is 30 feet** (per the design spec). Either side can be toggled independently via the `PROXIMITY_CONNECT` / `PROXIMITY_DISCONNECT` extras (`"ON"` or `"OFF"`), so you can listen only for arrivals, only for departures, or both.
+
+Important: the proximity broadcast is _signal_, not _state_. Your app decides what to do with it — auto-call `CONNECT_WIRELESS_DISPLAY`, prompt the user, log analytics, or nothing at all.
+
+---
+
+## High-Level Lifecycle for Proximity
+
+The proximity sub-API has its own four-step shape that runs **inside** an active ZWDS session — i.e. between `INIT_DEV_SERVICE` and `DEINIT_DEV_SERVICE`.
+
+| Step | API | Purpose | Key Outputs | Common Failure Modes |
+|------|-----|---------|-------------|----------------------|
+| 1 | `REGISTER_PROXIMITY_CONNECTION` | Spins up the BT side of the dev service and registers the caller as a proximity client. **Required** before any `SET_PROXIMITY_CONNECTION` call. | `RESULT_MESSAGE` returns `Success + Client ID` (and an error code on failure) | BT off, peer not paired/remembered, ZWDS not initialized |
+| 2 | `SET_PROXIMITY_CONNECTION` | Turns the connect/disconnect threshold-crossing broadcasts on or off, and sets the feet thresholds. | --- | Threshold > 30 ft, missing prior REGISTER |
+| - | _Host moves around_ | ZWDS evaluates BT class proximity continuously and broadcasts `BT_PROXIMITY_STATE_CHANGE` whenever the user crosses a threshold. | JSON event payload | Drift / multipath in crowded RF environments |
+| 3 | `SET_PROXIMITY_CONNECTION` (OFF) | _Optional._ Silence the broadcasts without unregistering — useful if you want to keep the client alive across a UI mode change. | --- | --- |
+| 4 | `UNREGISTER_PROXIMITY_CONNECTION` | Releases the BT client and tears down the BT-side plumbing. **Call this** when proximity is no longer needed (e.g. on activity / app teardown). | --- | Skipping it leaks the client until the next `DEINIT_DEV_SERVICE` |
+
+The three Intent actions live in the same namespace as the wireless-display ones:
+
+- `com.zebra.wirelessdeveloperservice.action.REGISTER_PROXIMITY_CONNECTION`
+- `com.zebra.wirelessdeveloperservice.action.SET_PROXIMITY_CONNECTION`
+- `com.zebra.wirelessdeveloperservice.action.UNREGISTER_PROXIMITY_CONNECTION`
+
+All three follow the same template described later under **API Template** (set `WIRELESS_DEV_SERVICE_PACKAGE`, attach a `CALLBACK_RESPONSE` PendingIntent, include the `SECURE_TOKEN` if you're in secure mode, then `sendBroadcast(intent)`).
+
+---
+
+## Expanded State Machine View — Proximity
+
+Below is the proximity-specific view, sitting on top of the main ZWDS lifecycle. Bracketed transitions are environment events; unbracketed ones are API calls.
+
+```mermaid
+%%{init: { 
+  "theme": "neutral", 
+  "themeVariables": { 
+    "fontFamily": "Courier New, monospace",
+    "fontSize": "14px",
+    "primaryColor": "#9acd32",
+    "primaryBorderColor": "#1E3A8A",
+    "primaryTextColor": "#1E3A8A"
+  } 
+}}%%
+stateDiagram-v2
+
+    [*] --> Initialized : INIT_DEV_SERVICE
+    Initialized --> ProximityRegistered : REGISTER_PROXIMITY_CONNECTION
+
+    ProximityRegistered --> ProximityArmed : SET_PROXIMITY_CONNECTION (ON, thresholds)
+
+    state ProximityArmed {
+        direction LR
+        [*] --> Far
+        Far --> Near : connection_status=2 (within CONNECT_THRESHOLD)
+        Near --> Far : connection_status=4 (beyond DISCONNECT_THRESHOLD)
+    }
+
+    ProximityArmed --> ProximityRegistered : SET_PROXIMITY_CONNECTION (OFF)
+    ProximityRegistered --> Initialized : UNREGISTER_PROXIMITY_CONNECTION
+    Initialized --> [*] : DEINIT_DEV_SERVICE
+```
+
+Two non-obvious things worth internalising from this diagram:
+
+- **REGISTER and SET are not the same.** Register grants you a **Client ID**; Set is what actually arms the radio-threshold logic. You can SET multiple times within the same registration — for example, to retune thresholds for a different room — without re-registering.
+- **Proximity broadcasts and the actual P2P connect are decoupled.** Crossing the threshold gives you a `BT_PROXIMITY_STATE_CHANGE` callback; whether that turns into an actual wireless-display session is your app's call. Some apps auto-fire `CONNECT_WIRELESS_DISPLAY` on `connection_status=2`; others use proximity purely as a UX hint (“the display is nearby — tap to cast”).
+
+---
+
+## `SET_PROXIMITY_CONNECTION` — Extras Reference
+
+This is the only proximity API that carries meaningful payload extras. Watch the types: the on/off flags are **strings**, the thresholds are **integers** (feet).
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `CALLBACK_RESPONSE` | PendingIntent | Standard ZWDS response sink |
+| `PROXIMITY_CONNECT` | String | `"ON"` enables / `"OFF"` disables the **connect-side** proximity broadcast |
+| `PROXIMITY_DISCONNECT` | String | `"ON"` enables / `"OFF"` disables the **disconnect-side** proximity broadcast |
+| `CONNECT_THRESHOLD` | Integer | Distance in feet at which the connect broadcast fires (max 30) |
+| `DISCONNECT_THRESHOLD` | Integer | Distance in feet at which the disconnect broadcast fires (max 30) |
+
+Setting both flags to `"OFF"` (and still passing the thresholds) disarms the broadcasts without releasing the BT client — exactly what the “Disable Proximity” button in the sample app does. To fully release, follow up with `UNREGISTER_PROXIMITY_CONNECTION`.
+
+---
+
+## The Proximity Callback: `BT_PROXIMITY_STATE_CHANGE`
+
+When proximity is armed and the host crosses one of the thresholds, ZWDS broadcasts:
+
+```
+com.zebra.wirelessdeveloperservice.action.BT_PROXIMITY_STATE_CHANGE
+```
+
+To receive it, declare the ZWDS broadcast permission in your manifest (the same one used for the display-detail and connection-state broadcasts):
+
+```xml
+<uses-permission android:name="com.zebra.permission.ZWDS_BROADCAST" />
+```
+
+The broadcast carries two string extras:
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `STATE_TYPE` | String | `BT_PROXIMITY_STATE` |
+| `STATE_CHANGE` | String | JSON — see below |
+
+Connect (host moved _into_ proximity):
+
+```json
+{"proximity_monitor_status":{"connection_status":2,"p2p_friendly_name":"ZEC500"}}
+```
+
+Disconnect (host moved _out of_ proximity):
+
+```json
+{"proximity_monitor_status":{"connection_status":4,"p2p_friendly_name":"ZEC500"}}
+```
+
+**The two magic numbers to remember**: `2` = entered connect proximity, `4` = entered disconnect proximity. Anything else should be treated as “unknown” and surfaced for diagnostics rather than acted on.
+
+> ⚠️ **Don't confuse this with `CONNECTION_STATE_CHANGE`.** That second broadcast (action `com.zebra.wirelessdeveloperservice.action.CONNECTION_STATE_CHANGE`) uses a different envelope — `{"p2p_connection_status":{"connection_status":1}}` for connected and `0` for disconnected — and reports the actual P2P / wireless-display session state, not BT proximity. A robust app listens to **both**: `BT_PROXIMITY_STATE_CHANGE` to decide _whether_ to connect, and `CONNECTION_STATE_CHANGE` to confirm the link actually came up.
+
+A reference implementation of the parsing — extracting `proximity_monitor_status.connection_status` and mapping `2` / `4` to human-readable strings — lives in `DevResponseReceiver.processBtStateChangeResponse(...)` of the sample app.
+
+---
+
+## Wiring it together — sample-app flow
+
+The companion sample exposes four buttons that map one-to-one onto the proximity lifecycle, each with its own `request_id` so responses can be correlated back through the shared `DevResponseReceiver`:
+
+| Button | Action | Extras | `request_id` |
+|--------|--------|--------|--------------|
+| **Register** | `REGISTER_PROXIMITY_CONNECTION` | `CALLBACK_RESPONSE` (+ optional `SECURE_TOKEN`) | `2000` |
+| **Enable Proximity** | `SET_PROXIMITY_CONNECTION` | `PROXIMITY_CONNECT="ON"`, `PROXIMITY_DISCONNECT="ON"`, `CONNECT_THRESHOLD`, `DISCONNECT_THRESHOLD` (read from on-screen text fields) | `2001` |
+| **Disable Proximity** | `SET_PROXIMITY_CONNECTION` | Same keys, both flags `"OFF"` | `2002` |
+| **Unregister** | `UNREGISTER_PROXIMITY_CONNECTION` | `CALLBACK_RESPONSE` | `2003` |
+
+A practical end-to-end integration looks like this:
+
+- After `INIT_DEV_SERVICE` succeeds, call `REGISTER_PROXIMITY_CONNECTION`.
+- On its success callback (which delivers the **Client ID** inside `RESULT_MESSAGE`), call `SET_PROXIMITY_CONNECTION` with your chosen thresholds. A common starting point: connect at 4 ft, disconnect at 8 ft — more on why this asymmetry matters in **Best practices** below.
+- Listen for `BT_PROXIMITY_STATE_CHANGE`. On `connection_status:2`, optionally fire `CONNECT_WIRELESS_DISPLAY` against the remembered display's MAC. On `connection_status:4`, optionally fire `DISCONNECT_WIRELESS_DISPLAY`.
+- On app teardown (or whenever proximity is no longer relevant), call `UNREGISTER_PROXIMITY_CONNECTION` **before** `DEINIT_DEV_SERVICE`.
+
+---
+
+## Best practices — Proximity edition
+
+- **Use hysteresis.** If `CONNECT_THRESHOLD == DISCONNECT_THRESHOLD`, a user lingering on the boundary will see the host bounce in and out of proximity. A 2–4 ft gap between the two values is a sane starting point and avoids broadcast flapping.
+- **Always REGISTER before SET.** The spec mandates the order; ZWDS will reject a SET that hasn't been preceded by a successful REGISTER. Model REGISTER → SET as a state in your app, not two unrelated button handlers.
+- **Hold on to the Client ID.** The Client ID returned in the REGISTER success response is what ties subsequent SETs back to your app. Log it — it's the first thing you'll be asked for in support.
+- **Pair proximity with the connection-state callback.** `BT_PROXIMITY_STATE_CHANGE` tells you the user is _close_; `CONNECTION_STATE_CHANGE` tells you the link actually came up. Treat the first as intent, the second as truth.
+- **Mind doze mode.** As noted later under _Known Behavior_, an idle device beyond ~1 hr can wedge ZWDS — the proximity client will go silent until Wi-Fi is toggled. Don't infer “user walked away” from silence alone; cross-check with `GET_STATUS` if your UX depends on it.
+- **Unregister on the way out.** Skipping `UNREGISTER_PROXIMITY_CONNECTION` doesn't crash anything, but the BT client survives until the next `DEINIT_DEV_SERVICE` and that can subtly extend the proximity window past your app's actual lifecycle.
+
+---
+
+
+---
+
 Enjoy this new ZEC500 experience!
 
 ![](https://cxnt48.com/author?ghZWDSAPI) 
